@@ -3,33 +3,16 @@ package base;
 import java.util.ArrayList;
 
 public class Folder {
-
 	private ArrayList<Note> notes;
 	private String name;
 	
-	public Folder(String name){
+	public Folder(String name) {
 		this.name = name;
 		notes = new ArrayList<Note>();
 	}
 	
-	public void addNote(Note note){
+	public void addNote(Note note) {
 		notes.add(note);
-	}
-	
-	public String getName(){
-		return name;
-	}
-	
-	public ArrayList<Note> getNotes(){
-		return notes;
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		return result;
 	}
 
 	@Override
@@ -48,16 +31,25 @@ public class Folder {
 			return false;
 		return true;
 	}
-	public String toString(){
-		int nText=0;
-		int nImage=0;
-		
-		for (Note f : notes ){
-			if (f instanceof TextNote)
+
+	public ArrayList<Note> getNotes() {
+		return notes;
+	}
+	public String getName() {
+		return name;
+	}
+	
+	@Override
+	public String toString() {
+		int nText = 0;
+		int nImage = 0;
+		for (int i = 0; i < notes.size(); i++) {
+			if (notes.get(i) instanceof TextNote) {
 				nText++;
-			if (f instanceof ImageNote)
+			} else if (notes.get(i) instanceof ImageNote) {
 				nImage++;
+			}
 		}
-		return name+":"+nText+":"+nImage;
+		return name + ":" + nText + ":" + nImage;
 	}
 }
