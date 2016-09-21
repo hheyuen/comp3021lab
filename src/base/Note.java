@@ -1,8 +1,9 @@
 package base;
 
 import java.util.Date;
+import java.util.List;
 
-public class Note {
+public class Note implements Comparable<Note>{
 	private Date date;
 	private String title;
 	
@@ -41,5 +42,26 @@ public class Note {
 	public String getTitle() {
 		return title;
 	}
-
+	
+	@Override
+	public int compareTo(Note o) {
+		// TODO Auto-generated method stub
+		if(this.date.compareTo(o.date)<0) return 1;
+		else if(this.date.compareTo(o.date)>0) return -1;
+		else return 0;
+	}
+	public boolean contains(String key){
+		return title.toLowerCase().contains(key.toLowerCase());
+	}
+	
+	public boolean containsOr(List<String> keys) {
+		for (int i = 0; i < keys.size(); i++){
+			if (contains(keys.get(i)))
+				return true;
+		}
+		return false;
+	}
+	public String toString() {
+		return date.toString() + "\t" + title;
+	}
 }
