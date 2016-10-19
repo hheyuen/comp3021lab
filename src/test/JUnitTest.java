@@ -40,7 +40,7 @@ public class JUnitTest {
 	public void testCountLetters(){
 		TextNote tn = new TextNote("lab5","no");
 		Character output = tn.countLetters();
-		assertEquals(new Character('a'), output);
+		assertEquals(new Character('l'), output);
 		
 	}
 
