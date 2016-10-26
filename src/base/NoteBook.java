@@ -1,28 +1,57 @@
 package base;
 
+//import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class NoteBook {
+public class NoteBook implements java.io.Serializable{
 	private ArrayList<Folder> folders;
-
-	public NoteBook() {
-		this.folders = new ArrayList<Folder>();
+	
+	private static final long serialVersionUID = 1L;
+	
+	public NoteBook(){
+		super();
+		folders = new ArrayList<Folder>();
 	}
 	
-	public boolean createTextNote(String folderName, String title) {
+	public boolean createTextNote(String folderName, String title){
 		TextNote note = new TextNote(title);
-		return insertNote(folderName, note);
+		return insertNote(folderName,note);
 	}
-	public boolean createTextNote (String folderName, String title, String content) {
+	
+	public boolean createImageNote(String folderName, String title){
+		ImageNote note = new ImageNote(title);
+		return insertNote(folderName,note);
+	}
+	
+	//@Overload
+	public boolean createTextNote(String folderName, String title, String content){
 		TextNote note = new TextNote(title, content);
 		return insertNote(folderName, note);
 	}
-	private boolean insertNote(String folderName, Note note) {
+	
+	public ArrayList<Folder> getFolders(){
+		return folders;
+	}
+	
+	
+	public void addFolder(String foldername){
+		folders.add(new Folder(foldername));
+	}
+	
+	
+	
+	public boolean insertNote(String folderName, Note note)
+	{
+		
 		Folder f = null;
 		for (Folder f1 : folders) {
-			if (f1.equals(new Folder(folderName))){
+			if (f1.getName().equals(folderName)) {
 				f = f1;
 			}
 		}
@@ -31,32 +60,67 @@ public class NoteBook {
 			folders.add(f);
 		}
 		for (Note n : f.getNotes()) {
-			if (n.equals(note)) {
+			if (n.getTitle().equals(note.getTitle())) {
 				System.out.println("Creating note " + n.getTitle() + " under folder " + folderName + " failed");
 				return false;
 			}
 		}
-				f.getNotes().add(note);
+				f.addNote(note);
 		return true;
-	}
-
-	public boolean createImageNote(String folderName, String title) {
-		ImageNote note = new ImageNote(title);
-		return insertNote(folderName, note);
-	}
-	
-	public ArrayList<Folder> getFolders() {
-		return folders;
+		
 	}
 	
 	public void sortFolders(){
+		for(Folder fi : folders ){
+			fi.sortNotes();
+		}
+		
 		Collections.sort(folders);
 	}
-	public List<Note> searchNotes (String keywords) {
-		ArrayList<Note> temp = new ArrayList<Note>();
-		for (int i = 0; i < folders.size(); i ++) {
-			temp.addAll(folders.get(i).searchNotes(keywords));
+	
+	public List<Note> searchNotes(String keywords){
+		ArrayList<Note> result = new ArrayList<Note>();
+		for( Folder f : folders){
+			result.addAll(f.searchNotes(keywords));
 		}
-		return temp;
+		
+		return result;
 	}
+	
+	
+	
+	public boolean save(String file){
+		FileOutputStream fos = null;
+		ObjectOutputStream out = null;
+		try {
+		fos = new FileOutputStream(file);
+		out = new ObjectOutputStream(fos);
+		out.writeObject(this);
+		out.close();
+
+		} catch (Exception e) {
+		return false;
+		}
+		return true;
+		}
+	
+	public NoteBook(String file){
+		// TODO
+		FileInputStream fis = null;
+		ObjectInputStream in = null;
+		try {
+		fis = new FileInputStream(file);
+		in = new ObjectInputStream(fis);
+		NoteBook n = (NoteBook) in.readObject();
+		this.folders=n.folders;
+		in.close();
+		} catch (Exception e) {
+		e.printStackTrace();
+		}
+		// TODO
+		}
 }
+	
+	
+	
+	
